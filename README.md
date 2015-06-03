@@ -2,8 +2,8 @@
 Simplify creating AWS CloudFormation templates
 
 ## Mission Statement
-CloudFormation provides a vast array of options and combinations for your deployment. As a starting point, you usually just want
-something simple. 
+CloudFormation provides a vast array of options and combinations for your deployment. This can be overwhelming for beginners
+and lead to large complicated collections of cfn templates with flow control in them for advanced users.
 
 This library aims to abstract away the more complex and time consuming aspects of building cloudformation templates, in favour
 of more common architectures. Although there will be a certain amount of ideology in how I choose to draw the boundaries on

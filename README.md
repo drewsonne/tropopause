@@ -20,7 +20,11 @@ By wrapping every ami/instance in an autoscaling group, we encourage Highly Avai
 You can create a specific type of ec2 instance (for example a Bastion host) simply be inheriting from this class.
 
     from troposphere.components import compute
-    class Bastion(compute.Group):
+    class WebServer(compute.Group):
         def __init__(self, **kwargs):
             super().__init__(*kwargs)
-            self.cfn_template.
+            self.cfn_template.add_cloud_init_script(
+                "yum update -y",
+                "yum install httpd",
+                "chkconfig httpd on"
+            )

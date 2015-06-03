@@ -17,3 +17,10 @@ objects accessible.
 ### Compute Groups
 compute.Group objects are a wrapper for launch configs, and autoscaling groups.
 By wrapping every ami/instance in an autoscaling group, we encourage Highly Available and redundant architectures.
+You can create a specific type of ec2 instance (for example a Bastion host) simply be inheriting from this class.
+
+    from troposphere.components import compute
+    class Bastion(compute.Group):
+        def __init__(self, **kwargs):
+            super().__init__(*kwargs)
+            self.cfn_template.

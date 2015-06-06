@@ -21,6 +21,7 @@ should extend a class which has `compute.Group` in the parent hierarchy. What do
 
 It means this bad...
 
+    ```python
     my_web_server = compute.Group(title='WordPress')
     my_web_server.config().packages.update({
         'yum' : {
@@ -30,10 +31,12 @@ It means this bad...
         }
     })
     my_project.add_computegroup(my_web_server))
+    ```
 
 
 And this is good...
 
+    ```python
     # ~/.tropopause/plugins/mycompany.py
     from tropopause.components import compute
     class Wordpress(compute.Group):
@@ -59,7 +62,7 @@ And this is good...
     my_project.add_computegroup(plugins.Wordpress(
         php_log_level=2
     ))
-            
+    ```
             
 
 ### Core plugins

@@ -21,45 +21,48 @@ should extend a class which has `compute.Group` in the parent hierarchy. What do
 
 It means this bad...
 
-    my_web_server = compute.Group(title='WordPress')
-    my_web_server.config().packages.update({
-        'yum' : {
-            'httpd' : [],
-            'php' : [],
-            'wordpress': []
-        }
-    })
-    my_project.add_computegroup(my_web_server))
+```python
+my_web_server = compute.Group(title='WordPress')
+my_web_server.config().packages.update({
+    'yum' : {
+        'httpd' : [],
+        'php' : [],
+        'wordpress': []
+    }
+})
+my_project.add_computegroup(my_web_server))
+```
 
 
 And this is good...
 
-    # ~/.tropopause/plugins/mycompany.py
-    from tropopause.components import compute
-    class Wordpress(compute.Group):
-        def __init__(self, **kwargs):
-            # Set defaults
-            self.php_log_level = None
-            self.
-            # Initialise Parent
-            super().__init__(*kwargs)
-            # Override/extend parent
-            self.config().packages.update({
-                'yum' : {
-                    'httpd' : [],
-                    'php' : [],
-                    'wordpress' : []
-                }
-            })
-            
-    # myproject/build_cfn.py
-    with plugin_source:
-        from mycompany import plugins
-    ...
-    my_project.add_computegroup(plugins.Wordpress(
-        php_log_level=2
-    ))
-            
+```python
+# ~/.tropopause/plugins/mycompany.py
+from tropopause.components import compute
+class Wordpress(compute.Group):
+    def __init__(self, **kwargs):
+        # Set defaults
+        self.php_log_level = None
+        self.
+        # Initialise Parent
+        super().__init__(*kwargs)
+        # Override/extend parent
+        self.config().packages.update({
+            'yum' : {
+                'httpd' : [],
+                'php' : [],
+                'wordpress' : []
+            }
+        })
+        
+# myproject/build_cfn.py
+with plugin_source:
+    from mycompany import plugins
+...
+my_project.add_computegroup(plugins.Wordpress(
+    php_log_level=2
+))
+```
             
 
 ### Core plugins

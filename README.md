@@ -1,9 +1,12 @@
 # tropopause
-Simplify creating AWS CloudFormation templates
+Simplify creating AWS CloudFormation templates. This is an attempt at code as infrastructure and taking advantage of the
+benefits of code, such as loose coupling, reuse, and abstraction.
 
 ## Mission Statement
 CloudFormation provides a vast array of options and combinations for your deployment. This can be overwhelming for beginners
-and lead to large complicated collections of cfn templates with flow control in them for advanced users.
+as well as encouraging either many cfn templates or few large cfn templates in them for advanced users. CloudFormation
+does provide an element of flow control in the form of mapping (`Fn:FindInMap`) and conditions (`Fn::And`, `Fn::Equals`,
+`Fn::If`, `Fn::Not`, and `Fn::Or`), but this becomes complex very quickly.
 
 This library aims to abstract away the more complex and time consuming aspects of building cloudformation templates, in favour
 of more common architectures. Although there will be a certain amount of ideology in how I choose to draw the boundaries on
@@ -15,7 +18,7 @@ objects accessible.
  - All instances used in the core (nat instances, openvpn, etc.) will use the plugin architecture. Eat your own dogfood, etc.
  
 ## Plugins
-### Extending
+### Creating
 In the spirit of loose coupling and reusable code, rather than defining what an instance is meant to be at run time, you
 should extend a class which has `compute.Group` in the parent hierarchy. What does this mean?
 

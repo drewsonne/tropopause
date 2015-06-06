@@ -1,0 +1,11 @@
+{
+    "Description": "Make sure we have a basic template",
+    "Resources": {
+        "TestProject": {
+            "Properties": {
+                "CidrBlock": "10.0.0.0/16"
+            },
+            "Type": "AWS::EC2::VPC"
+        }
+    }
+}

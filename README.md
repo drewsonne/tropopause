@@ -12,6 +12,7 @@ objects accessible.
 
 ## Assumptions
  - All instances will be contain in auto scaling groups of at least 1.
+ - All instances used in the core (nat instances, openvpn, etc.) will use the plugin architecture. Eat your own dogfood, etc.
  
 ## Plugins
 ### Extending
@@ -19,7 +20,7 @@ In the spirit of loose coupling and reusable code, rather than defining what an 
 should extend a class which has `compute.Group` in the parent hierarchy. What does this mean?
 
 
-It means this bad...
+It means this is bad because you'll have to copy/paste code to create another wordpress compute group.
 
 ```python
 my_web_server = compute.Group(title='WordPress')
@@ -34,7 +35,7 @@ my_project.add_computegroup(my_web_server))
 ```
 
 
-And this is good...
+And this is good because you include the plugin in as many projects as you wish
 
 ```python
 # ~/.tropopause/plugins/mycompany.py

@@ -1,0 +1,66 @@
+{
+    "Description": "Make sure we have a basic template",
+    "Resources": {
+        "PublicSubnet": {
+            "Properties": {
+                "CidrBlock": "10.0.0.0/24",
+                "VpcId": {
+                    "Ref": "TestProject"
+                }
+            },
+            "Type": "AWS::EC2::Subnet"
+        },
+        "PublicSubnetGatewayToInternet": {
+            "Properties": {
+                "InternetGatewayId": {
+                    "Ref": "PublicSubnetInternetGateway"
+                },
+                "VpcId": {
+                    "Ref": "TestProject"
+                }
+            },
+            "Type": "AWS::EC2::VPCGatewayAttachment"
+        },
+        "PublicSubnetInternetGateway": {
+            "Type": "AWS::EC2::InternetGateway"
+        },
+        "PublicSubnetPublicRoute": {
+            "DependsOn": "PublicSubnetInternetGateway",
+            "Properties": {
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "GatewayId": {
+                    "Ref": "PublicSubnetInternetGateway"
+                },
+                "RouteTableId": {
+                    "Ref": "PublicSubnetRouteTable"
+                }
+            },
+            "Type": "AWS::EC2::Route"
+        },
+        "PublicSubnetRouteTable": {
+            "Properties": {
+                "VpcId": {
+                    "Ref": "TestProject"
+                }
+            },
+            "Type": "AWS::EC2::RouteTable"
+        },
+        "PublicSubnetRouteTableAssociation": {
+            "Properties": {
+                "RouteTableId": {
+                    "Ref": "PublicSubnetRouteTable"
+                },
+                "SubnetId": {
+                    "Ref": "PublicSubnet"
+                }
+            },
+            "Type": "AWS::EC2::SubnetRouteTableAssociation"
+        },
+        "TestProject": {
+            "Properties": {
+                "CidrBlock": "10.0.0.0/16"
+            },
+            "Type": "AWS::EC2::VPC"
+        }
+    }
+}

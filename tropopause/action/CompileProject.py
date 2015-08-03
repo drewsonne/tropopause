@@ -9,9 +9,9 @@ __author__ = 'drews'
 # Builds a troposphere object based on a project object
 # Keep the compilation work seperate from the data object.
 class CompileProject(BaseAction):
-    def __init__(self, project):
+    def __init__(self, project, template):
         self.project = project
-        self.cfn_template = Template()
+        self.cfn_template = template
         self.cfn_vpc = None
 
     def compile(self):
@@ -43,7 +43,7 @@ class CompileProject(BaseAction):
             else:
                 public_subnet = True
 
-        if public_subnet:
+        if public_subnet or private_subnet:
             public_subnet = self.generate_public_subnet()
         if private_subnet:
             private_subnet = self.generate_private_subnet()
@@ -60,7 +60,7 @@ class CompileProject(BaseAction):
         ))
 
     def generate_private_subnet(self):
-        vpc_rer = Ref(self.cfn_vpc)
+        vpc_ref = Ref(self.cfn_vpc)
 
         private_route_table = self.create_route_table(name='PrivateSubnet')
         private_route = self.cfn_template.add_resource(Route(
@@ -68,7 +68,21 @@ class CompileProject(BaseAction):
             DependsOn=[private_route_table]
         ))
 
-        CompileNatInstance(self.project).compile()
+        private_subnet = self.cfn_template.add_resource(Subnet(
+            'PrivateSubnet',
+            VpcId=vpc_ref,
+            CidrBlock=self.generate_subnet_cidr()
+        ))
+
+        self.bind_table_to_subnet(
+            name='PrivateSubnet',
+            table=private_route_table,
+            subnet=private_subnet
+        )
+
+        CompileNatInstance(self.project, self.cfn_template).compile(
+            route_table_name=Ref(private_route_table)
+        )
 
     def generate_public_subnet(self):
         vpc_ref = Ref(self.cfn_vpc)
@@ -86,13 +100,11 @@ class CompileProject(BaseAction):
             DestinationCidrBlock="0.0.0.0/0",
             GatewayId=Ref(igw)
         ))
-        range_diff = 32-int(self.project.cidr_range)
-        subnet_offset = int(range_diff/2)
-        range_mask = subnet_offset+int(self.project.cidr_range)
+
         public_subnet = self.cfn_template.add_resource(Subnet(
             'PublicSubnet',
             VpcId=vpc_ref,
-            CidrBlock=self.project.cidr_block+'/'+str(range_mask)
+            CidrBlock=self.generate_subnet_cidr()
         ))
         self.bind_table_to_subnet(
             name='PublicSubnet',
@@ -101,6 +113,12 @@ class CompileProject(BaseAction):
         )
 
         return public_subnet
+
+    def generate_subnet_cidr(self):
+        range_diff = 32-int(self.project.cidr_range)
+        subnet_offset = int(range_diff/2)
+        range_mask = subnet_offset+int(self.project.cidr_range)
+        return self.project.cidr_block+'/'+str(range_mask)
 
     def generate_routing_table(self, private_subnet, public_subnet):
         pass

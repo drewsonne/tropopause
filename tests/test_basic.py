@@ -21,6 +21,8 @@ class TestBasic(unittest.TestCase):
         test_project.region = 'eu-west-1'
         test_project.default_ami = 'ami-123456'
         test_project.default_instance_size = 't2.micro'
+
+
         return test_project
 
     # Gets a json document from the resources dir and returns
@@ -44,21 +46,16 @@ class TestBasic(unittest.TestCase):
         test_project = self.setup_project()
         awslinux = compute.Group(
             title='AWSLinux',
-            private=False
+            private=True
         )
         awslinux.ami_id = 'ami-a10897d6'
-        test_project.add_compute_group(compute.Group(
-            title='AWSLinux',
-            private=False,
-
-        ))
+        test_project.add_compute_group(awslinux)
         cfn_json = test_project\
             .generate_troposphere()\
             .to_json()
         cfn_dict = json.loads(cfn_json)
-        with open('add_compute.cfn', 'w') as fp:
-            fp.write(cfn_json)
-        # MAKE ASSERTIONS!!!
+        # with open('add_compute.cfn', 'w') as fp:
+        #     fp.write(cfn_json)
 
     def test_adddb(self):
         test_project = self.setup_project()

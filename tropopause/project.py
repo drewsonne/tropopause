@@ -1,3 +1,4 @@
+from troposphere import Template
 from tropopause import Base, BaseAction
 from tropopause.action.CompileProject import CompileProject
 
@@ -22,7 +23,8 @@ class Project(Base):
         compute_group.project = self
 
     def generate_troposphere(self):
-        return CompileProject(self).compile().cfn_template
+        template = Template()
+        return CompileProject(self, template).compile().cfn_template
 
     def add_database(self, database):
         pass

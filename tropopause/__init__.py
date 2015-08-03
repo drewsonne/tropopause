@@ -12,12 +12,3 @@ class Base:
 
 class BaseAction:
     pass
-
-class Plugins:
-    def load():
-        plugin = Plugins()
-        # 1 - Find config file
-        # 2 - Read config defaults
-        # 3 - Merge config and defaults
-        # 4 -
-        pass

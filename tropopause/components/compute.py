@@ -20,7 +20,7 @@ class Group(Base):
         # Override/extend parent
         self.is_private= private
         self.title = title
-        self._config = {"default":AutoScaleConfig()}
+        self._config = {"default":AutoScaleConfig({},{},{},{},{},{},{})}
 
     # Get a particular configset.
     def config(self,name='default'):
